@@ -34,6 +34,10 @@ config.font_size = 14.0
 -- タイトルバーを消して、枠だけ残す
 config.window_decorations="RESIZE"
 
+-- 透明化
+config.window_background_opacity=0.85
+config.macos_window_background_blur=20
+
 -- タブが 1 つだけならタブバーを隠す
 config.hide_tab_bar_if_only_one_tab=true
 
