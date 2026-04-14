@@ -18,6 +18,12 @@ compinit
 # spell complete
 setopt correct
 
+# zsh-completions
+
+if [ -e /usr/local/share/zsh-completions ]; then
+  fpath=(/usr/local/share/zsh-completions $fpath)
+fi
+
 ################################################################################
 # aliases
 ################################################################################
@@ -72,15 +78,6 @@ export STARSHIP_CONFIG="$HOME/dotfiles/starship.toml"
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# zsh-completions
-
-if [ -e /usr/local/share/zsh-completions ]; then
-  fpath=(/usr/local/share/zsh-completions $fpath)
-fi
-
-autoload -Uz compinit
-compinit -u
 
 ################################################################################
 # for competitive programming
