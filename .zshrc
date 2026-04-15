@@ -99,14 +99,6 @@ alias EXPORT='function _export() {cat feedback.md | iconv -t utf16 | tail -c +3 
 
 export PATH="$HOME/.local/bin:$PATH"
 
-# pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-
-# pyenv init
-eval "$(pyenv init --path)"
-eval "$(pyenv init -)"
-
 # volta
 
 export VOLTA_HOME="$HOME/.volta"
