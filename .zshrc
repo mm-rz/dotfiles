@@ -96,3 +96,18 @@ alias REVIEW='function _review() {cp _review feedback.md; }; _review'
 alias TEST='function _test() {cp _test feedback.md; }; _test'
 alias EXPORT='function _export() {cat feedback.md | iconv -t utf16 | tail -c +3 | clip.exe; }; _export'
 
+
+export PATH="$HOME/.local/bin:$PATH"
+
+# pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+
+# pyenv init
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+
+# volta
+
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
