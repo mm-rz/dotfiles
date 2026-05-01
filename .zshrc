@@ -82,6 +82,9 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 # go
 export PATH=$PATH:/usr/local/go/bin
 
+# direnv
+export EDITOR=nvim
+eval "$(direnv hook zsh)"
 
 ################################################################################
 # for competitive programming
