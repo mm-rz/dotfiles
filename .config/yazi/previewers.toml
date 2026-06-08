@@ -1,0 +1,5 @@
+[[previewers]]
+name = "text"
+mime = "text/*"
+run = "bat --style=plain --paging=never --wrap=character --terminal-width=$YAZI_PREVIEW_COLUMNS \"$1\""
+
