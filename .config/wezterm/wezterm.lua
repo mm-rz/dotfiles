@@ -82,20 +82,15 @@ config.keys = {
         end)
     },
     {
-        key = "c",
-        mods = "CTRL|SHIFT",
-        action = wezterm.action{SendKey={key="c", mods="CTRL"}}
-    },
-    {
-        key = "v",
-        mods = "CTRL",
-        action = act.PasteFrom 'PrimarySelection',
-    },
-    {
-        key = "v",
-        mods = "CTRL|SHIFT",
-        action = wezterm.action{SendKey={key="v", mods="CTRL"}},
-    },
+    key = "c",
+    mods = "CTRL|SHIFT",
+    action = act.CopyTo("Clipboard"),
+  },
+  {
+    key = "v",
+    mods = "CTRL|SHIFT",
+    action = act.PasteFrom("Clipboard"),
+  },
 }
 
 return config
