@@ -207,7 +207,7 @@ link_file() {
     run ln -s "$source_path" "$target_path"
 }
 
-install_base() { packages ca-certificates curl git unzip; }
+install_base() { packages bash ca-certificates curl git unzip; }
 install_build() {
     case $PACKAGE_MANAGER in
         apt) packages build-essential pkg-config libssl-dev ;;
@@ -258,13 +258,13 @@ install_go() {
 install_volta() {
     if have volta; then say "  already installed: volta"; return; fi
     if [ "$DRY_RUN" -eq 1 ]; then
-        say "+ download the Volta installer and run it with --skip-setup"
+        say "+ download the Volta installer and run it with Bash and --skip-setup"
         return
     fi
     volta_tmp=${TMPDIR:-/tmp}/volta-install.$$
     trap 'rm -f "$volta_tmp"' EXIT HUP INT TERM
     curl --proto '=https' --tlsv1.2 -fsSL https://get.volta.sh -o "$volta_tmp"
-    sh "$volta_tmp" --skip-setup
+    bash "$volta_tmp" --skip-setup
     rm -f "$volta_tmp"
     trap - EXIT HUP INT TERM
 }

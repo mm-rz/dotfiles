@@ -27,7 +27,7 @@ Ubuntu（`apt-get`）と Arch Linux（`pacman`）を自動判定する。判定�
 ```mermaid
 flowchart TB
     subgraph minimal["minimal（全プロファイル共通）"]
-        base["base<br/>ca-certificates / curl / git / unzip"]
+        base["base<br/>Bash / ca-certificates / curl / git / unzip"]
         build["build<br/>build-essential / pkg-config / libssl-dev"]
         shell["shell<br/>zsh / tmux / fzf / direnv"]
         rust["rust<br/>rustup / cargo"]
@@ -105,6 +105,9 @@ Arch Linux では Niri、awww、WezTerm を公式リポジトリから導入し�
 awww を公式ソースからビルドして WezTerm の公式 APT リポジトリを利用する。そのため、
 Arch Linux の `niri` と `awww` は Rust ビルド環境に依存しない。インストーラー自身が
 必要とするものは OS 標準の POSIX `sh` と、このリポジトリの取得に使う `git` だけである。
+`install.sh` 本体は POSIX `sh` を維持する。ただし、外部ツールの公式インストーラーが別の
+シェルを指定する場合は、そのシェルをパッケージとして先に導入し、一時ファイルへ保存した
+公式インストーラーだけを指定シェルで実行する。現在は Volta の公式手順に従って Bash を使う。
 
 ## CI
 
