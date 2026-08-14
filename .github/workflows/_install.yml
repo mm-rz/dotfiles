@@ -1,0 +1,50 @@
+name: Installer test
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        required: true
+        type: string
+      fd_command:
+        required: true
+        type: string
+
+jobs:
+  developer-profile:
+    name: developer profile
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out dotfiles
+        uses: actions/checkout@v4
+
+      - name: Install and verify developer profile
+        env:
+          TEST_IMAGE: ${{ inputs.image }}
+          EXPECTED_FD_COMMAND: ${{ inputs.fd_command }}
+        run: |
+          docker run --rm \
+            --volume "$GITHUB_WORKSPACE:/dotfiles:ro" \
+            --env EXPECTED_FD_COMMAND \
+            "$TEST_IMAGE" \
+            /bin/sh -euxc '
+              export HOME=/tmp/dotfiles-ci-home
+              mkdir -p "$HOME"
+
+              /dotfiles/install.sh --profile developer --yes
+
+              . "$HOME/.cargo/env"
+              PATH="$HOME/.volta/bin:$PATH"
+              export PATH
+
+              for command_name in zsh tmux fzf direnv cargo lsd bat starship zoxide sheldon yazi ya nvim python3 pip3 rg go volta; do
+                command -v "$command_name"
+              done
+              command -v "$EXPECTED_FD_COMMAND"
+
+              test "$(readlink "$HOME/.zshrc")" = /dotfiles/.zshrc
+              test "$(readlink "$HOME/.config/nvim")" = /dotfiles/.config/nvim
+
+              /dotfiles/install.sh --profile developer --yes
+            '

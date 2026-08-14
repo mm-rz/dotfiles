@@ -1,0 +1,21 @@
+name: Arch Linux · developer
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: install-archlinux-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    uses: ./.github/workflows/_install.yml
+    with:
+      image: archlinux:base
+      fd_command: fd

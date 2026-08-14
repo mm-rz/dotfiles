@@ -1,5 +1,9 @@
 # dotfiles
 
+[![Ubuntu latest · developer](https://github.com/mm-rz/dotfiles/actions/workflows/install-ubuntu.yml/badge.svg?branch=main)](https://github.com/mm-rz/dotfiles/actions/workflows/install-ubuntu.yml?query=branch%3Amain)
+[![Arch Linux · developer](https://github.com/mm-rz/dotfiles/actions/workflows/install-archlinux.yml/badge.svg?branch=main)](https://github.com/mm-rz/dotfiles/actions/workflows/install-archlinux.yml?query=branch%3Amain)
+![desktop · not tested](https://img.shields.io/badge/desktop-not_tested-lightgrey)
+
 新しい環境では、リポジトリを clone した直後に POSIX `sh` のインストーラーを実行する。
 
 ```sh
@@ -99,3 +103,11 @@ Arch Linux では Niri、awww、WezTerm を公式リポジトリから導入し�
 awww を公式ソースからビルドして WezTerm の公式 APT リポジトリを利用する。そのため、
 Arch Linux の `niri` と `awww` は Rust ビルド環境に依存しない。インストーラー自身が
 必要とするものは OS 標準の POSIX `sh` と、このリポジトリの取得に使う `git` だけである。
+
+## CI
+
+`main` ブランチへの push と pull request では、Ubuntu latest と Arch Linux の公式コンテナを
+使い、クリーンな環境へ `developer` プロファイルを実際に導入する。主要コマンドと設定の
+シンボリックリンクを確認した後、インストーラーを再実行して冪等性も検証する。
+累積プロファイルであるため `minimal` と `server` もこの検証に含まれる。より上位の
+`desktop` プロファイルは CI の対象外であり、README 冒頭のバッジにも未検証として表示する。
