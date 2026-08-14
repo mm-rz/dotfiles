@@ -2,7 +2,7 @@ return {
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate", 
-		ensure_installed = {"cpp", "lua", "markdown", "python", "markdown", "markdown_inline" },
+		ensure_installed = {"lua", "markdown", "python", "markdown", "markdown_inline" },
 		auto_install = true,
 		highlight = {
 			enable = true,

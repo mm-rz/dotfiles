@@ -17,3 +17,13 @@ vim.opt.number = true
 require("lazy").setup("plugins", {})
 		
 vim.opt.clipboard:append({"unnamedplus"})
+
+local function apply_cpp_highlight()
+  require("config.cpp_highlight").setup()
+end
+
+apply_cpp_highlight()
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  callback = apply_cpp_highlight,
+})
