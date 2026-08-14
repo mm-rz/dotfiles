@@ -32,6 +32,8 @@ Options:
 Environment:
   DOTFILES_PROFILE    default profile
   DOTFILES_SKIP       space- or comma-separated components to omit
+  DOTFILES_PACKAGE_MANAGER
+                      package manager override: apt or pacman
 EOF
 }
 
@@ -65,6 +67,23 @@ done
 normalise_list() { printf '%s' "$1" | tr ',' ' '; }
 SKIPPED=$(normalise_list "$SKIPPED")
 
+detect_package_manager() {
+    if [ -n "${DOTFILES_PACKAGE_MANAGER:-}" ]; then
+        case $DOTFILES_PACKAGE_MANAGER in
+            apt|pacman) printf '%s\n' "$DOTFILES_PACKAGE_MANAGER" ;;
+            *) die "unsupported package manager override: $DOTFILES_PACKAGE_MANAGER" ;;
+        esac
+    elif command -v apt-get >/dev/null 2>&1; then
+        printf '%s\n' apt
+    elif command -v pacman >/dev/null 2>&1; then
+        printf '%s\n' pacman
+    else
+        die "unsupported package manager (apt-get and pacman are supported)"
+    fi
+}
+
+PACKAGE_MANAGER=$(detect_package_manager)
+
 profile_components() {
     case $1 in
         minimal) printf '%s\n' 'base shell cli links-core' ;;
@@ -88,8 +107,9 @@ component_dependencies() {
         volta) printf '%s\n' base ;;
         fonts) printf '%s\n' base ;;
         desktop) printf '%s\n' base ;;
-        niri) printf '%s\n' rust ;;
-        awww) printf '%s\n' rust ;;
+        niri|awww)
+            if [ "$PACKAGE_MANAGER" = apt ]; then printf '%s\n' rust; else printf '%s\n' base; fi
+            ;;
         wezterm) printf '%s\n' base ;;
         links-core) printf '%s\n' 'shell cli' ;;
         links-editor) printf '%s\n' editor ;;
@@ -141,12 +161,13 @@ apt_install() {
     as_root apt-get install -y "$@"
 }
 
+pacman_install() { as_root pacman -S --needed --noconfirm "$@"; }
+
 packages() {
-    if have apt-get; then
-        apt_install "$@"
-    else
-        die "unsupported package manager (currently apt-get is supported)"
-    fi
+    case $PACKAGE_MANAGER in
+        apt) apt_install "$@" ;;
+        pacman) pacman_install "$@" ;;
+    esac
 }
 
 cargo_install() {
@@ -179,7 +200,12 @@ link_file() {
 }
 
 install_base() { packages ca-certificates curl unzip; }
-install_build() { packages build-essential pkg-config libssl-dev; }
+install_build() {
+    case $PACKAGE_MANAGER in
+        apt) packages build-essential pkg-config libssl-dev ;;
+        pacman) packages base-devel pkgconf openssl ;;
+    esac
+}
 install_shell() {
     packages zsh tmux fzf direnv
     if [ "${SHELL:-}" != "$(command -v zsh 2>/dev/null || printf /usr/bin/zsh)" ]; then
@@ -208,8 +234,19 @@ install_cli() {
     cargo_install_yazi
 }
 install_editor() { have nvim || packages neovim; }
-install_dev() { packages python3 python3-pip ripgrep fd-find; }
-install_go() { have go || packages golang-go; }
+install_dev() {
+    case $PACKAGE_MANAGER in
+        apt) packages python3 python3-pip ripgrep fd-find ;;
+        pacman) packages python python-pip ripgrep fd ;;
+    esac
+}
+install_go() {
+    have go && return
+    case $PACKAGE_MANAGER in
+        apt) packages golang-go ;;
+        pacman) packages go ;;
+    esac
+}
 install_volta() {
     if have volta; then say "  already installed: volta"; return; fi
     if [ "$DRY_RUN" -eq 1 ]; then
@@ -246,6 +283,7 @@ install_desktop() {
 }
 install_niri() {
     if have niri; then say "  already installed: niri"; return; fi
+    if [ "$PACKAGE_MANAGER" = pacman ]; then packages niri; return; fi
     packages clang libudev-dev libgbm-dev libxkbcommon-dev libegl1-mesa-dev \
         libwayland-dev libinput-dev libdbus-1-dev libsystemd-dev libseat-dev \
         libpipewire-0.3-dev libpango1.0-dev libdisplay-info-dev
@@ -268,6 +306,7 @@ install_niri() {
 }
 install_awww() {
     if have awww && have awww-daemon; then say "  already installed: awww"; return; fi
+    if [ "$PACKAGE_MANAGER" = pacman ]; then packages awww; return; fi
     packages libwayland-dev wayland-protocols liblz4-dev
     if [ "$DRY_RUN" -eq 1 ]; then
         say "+ clone the official awww repository, build it, and install awww and awww-daemon"
@@ -284,6 +323,7 @@ install_awww() {
 }
 install_wezterm() {
     if have wezterm; then say "  already installed: wezterm"; return; fi
+    if [ "$PACKAGE_MANAGER" = pacman ]; then packages wezterm; return; fi
     packages gnupg
     if [ "$DRY_RUN" -eq 1 ]; then
         say "+ add the official WezTerm APT repository and install wezterm"
@@ -315,6 +355,7 @@ install_links_desktop() {
 }
 
 say "Profile: $PROFILE"
+say "Packages: $PACKAGE_MANAGER"
 say "Plan:    $RESOLVED"
 if [ "$DRY_RUN" -eq 0 ] && [ "$ASSUME_YES" -eq 0 ]; then
     printf 'Continue? [y/N] '

@@ -7,6 +7,9 @@
 ./install.sh --profile server
 ```
 
+Ubuntu（`apt-get`）と Arch Linux（`pacman`）を自動判定する。判定を上書きして別環境向けの
+計画を確認する場合は、`DOTFILES_PACKAGE_MANAGER=apt` または `pacman` を指定できる。
+
 インストール単位には依存関係があり、必要なものは自動的に先に実行される。たとえば
 `cli` より先に `rust`、`build`、`base` が導入される。処理済みのコマンドや正しいリンクは可能な限り
 スキップされ、既存のリンク先は `.bak`（既にあれば日時付き）へ退避される。
@@ -68,8 +71,10 @@ flowchart TB
     base --> font
     base --> wayland
     base --> wezterm
-    rust --> niri
-    rust --> awww
+    rust -->|Ubuntu| niri
+    rust -->|Ubuntu| awww
+    base -->|Arch Linux| niri
+    base -->|Arch Linux| awww
 ```
 
 ## 環境プロファイル
@@ -89,5 +94,8 @@ DOTFILES_PROFILE=desktop DOTFILES_SKIP=fonts ./install.sh
 ./install.sh --list
 ```
 
-現在、OS パッケージの導入は `apt-get` 環境を対象としている。インストーラー自身が必要と
-するものは OS 標準の POSIX `sh` と、このリポジトリの取得に使う `git` だけである。
+OS パッケージの導入は Ubuntu の `apt-get` と Arch Linux の `pacman` に対応する。
+Arch Linux では Niri、awww、WezTerm を公式リポジトリから導入し、Ubuntu では Niri と
+awww を公式ソースからビルドして WezTerm の公式 APT リポジトリを利用する。そのため、
+Arch Linux の `niri` と `awww` は Rust ビルド環境に依存しない。インストーラー自身が
+必要とするものは OS 標準の POSIX `sh` と、このリポジトリの取得に使う `git` だけである。
