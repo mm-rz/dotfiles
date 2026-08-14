@@ -329,3 +329,4 @@ for component in $RESOLVED; do
 done
 
 say 'Done.'
+say 'Start a new login session, or run: exec zsh -l'
