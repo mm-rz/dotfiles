@@ -156,6 +156,11 @@ cargo_install() {
     run cargo install --locked "$crate"
 }
 
+cargo_install_yazi() {
+    if have yazi && have ya; then say "  already installed: yazi and ya"; return; fi
+    run cargo install --force yazi-build
+}
+
 link_file() {
     source_path=$SCRIPT_DIR/$1
     target_path=$HOME/$2
@@ -200,8 +205,7 @@ install_cli() {
     cargo_install starship
     cargo_install zoxide
     cargo_install sheldon
-    cargo_install yazi-fm yazi
-    cargo_install yazi-cli ya
+    cargo_install_yazi
 }
 install_editor() { have nvim || packages neovim; }
 install_dev() { packages python3 python3-pip ripgrep fd-find; }
