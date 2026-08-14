@@ -27,7 +27,7 @@ Ubuntu（`apt-get`）と Arch Linux（`pacman`）を自動判定する。判定�
 ```mermaid
 flowchart TB
     subgraph minimal["minimal（全プロファイル共通）"]
-        base["base<br/>ca-certificates / curl / unzip"]
+        base["base<br/>ca-certificates / curl / git / unzip"]
         build["build<br/>build-essential / pkg-config / libssl-dev"]
         shell["shell<br/>zsh / tmux / fzf / direnv"]
         rust["rust<br/>rustup / cargo"]

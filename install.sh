@@ -207,7 +207,7 @@ link_file() {
     run ln -s "$source_path" "$target_path"
 }
 
-install_base() { packages ca-certificates curl unzip; }
+install_base() { packages ca-certificates curl git unzip; }
 install_build() {
     case $PACKAGE_MANAGER in
         apt) packages build-essential pkg-config libssl-dev ;;
