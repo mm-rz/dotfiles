@@ -11,6 +11,7 @@ SKIPPED=${DOTFILES_SKIP:-}
 DRY_RUN=0
 ASSUME_YES=0
 APT_UPDATED=0
+PACMAN_UPDATED=0
 RESOLVED=
 
 say() { printf '%s\n' "$*"; }
@@ -161,7 +162,14 @@ apt_install() {
     as_root apt-get install -y "$@"
 }
 
-pacman_install() { as_root pacman -S --needed --noconfirm "$@"; }
+pacman_install() {
+    if [ "$PACMAN_UPDATED" -eq 0 ]; then
+        as_root pacman -Syu --needed --noconfirm "$@"
+        PACMAN_UPDATED=1
+    else
+        as_root pacman -S --needed --noconfirm "$@"
+    fi
+}
 
 packages() {
     case $PACKAGE_MANAGER in

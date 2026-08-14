@@ -99,6 +99,8 @@ DOTFILES_PROFILE=desktop DOTFILES_SKIP=fonts ./install.sh
 ```
 
 OS パッケージの導入は Ubuntu の `apt-get` と Arch Linux の `pacman` に対応する。
+Arch Linux では部分アップグレードを避けるため、最初のパッケージ導入時にリポジトリDBの
+同期とシステム全体のアップグレードを行う。
 Arch Linux では Niri、awww、WezTerm を公式リポジトリから導入し、Ubuntu では Niri と
 awww を公式ソースからビルドして WezTerm の公式 APT リポジトリを利用する。そのため、
 Arch Linux の `niri` と `awww` は Rust ビルド環境に依存しない。インストーラー自身が
