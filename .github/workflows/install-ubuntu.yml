@@ -1,0 +1,21 @@
+name: Ubuntu latest · developer
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: install-ubuntu-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    uses: ./.github/workflows/_install.yml
+    with:
+      image: ubuntu:latest
+      fd_command: fdfind

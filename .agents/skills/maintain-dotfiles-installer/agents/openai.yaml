@@ -1,0 +1,4 @@
+interface:
+  display_name: "dotfiles インストーラーの保守"
+  short_description: "依存関係を保ちながらインストーラーを安全に更新"
+  default_prompt: "$maintain-dotfiles-installer を使って、今回の dotfiles の変更に合わせて install.sh を更新してください。"
