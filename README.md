@@ -8,15 +8,78 @@
 ```
 
 インストール単位には依存関係があり、必要なものは自動的に先に実行される。たとえば
-`cli` は `rust`、`build`、`base` をこの順序関係で先に導入する。処理済みのコマンドや正しいリンクは可能な限り
+`cli` より先に `rust`、`build`、`base` が導入される。処理済みのコマンドや正しいリンクは可能な限り
 スキップされ、既存のリンク先は `.bak`（既にあれば日時付き）へ退避される。
+
+## 依存関係
+
+各subgraphは、そのプロファイルで初めて追加されるツールを表す。`server` は `minimal` を、
+`developer` は `server` を、`desktop` は `developer` をそれぞれ含む。実線の矢印は
+インストール上の依存関係であり、左側が右側より先に導入される。
+
+```mermaid
+flowchart TB
+    subgraph minimal["minimal（全プロファイル共通）"]
+        base["base<br/>ca-certificates / curl / unzip"]
+        build["build<br/>build-essential / pkg-config / libssl-dev"]
+        shell["shell<br/>zsh / tmux / fzf / direnv"]
+        rust["rust<br/>rustup / cargo"]
+        cli["cli<br/>lsd / bat / starship / zoxide<br/>sheldon / yazi / ya"]
+        core_links["links-core<br/>zsh / Vim / Starship / Sheldon<br/>Yazi / tmux の設定"]
+
+        base --> build --> rust --> cli
+        base --> shell
+        shell --> core_links
+        cli --> core_links
+    end
+
+    subgraph server["server で追加（デフォルト）"]
+        editor["editor<br/>Neovim"]
+        editor_links["links-editor<br/>Neovim の設定"]
+
+        editor --> editor_links
+    end
+
+    subgraph developer["developer で追加"]
+        dev["dev<br/>Python 3 / pip / ripgrep / fd-find"]
+        go["go<br/>Go toolchain"]
+        volta["volta<br/>Node.js toolchain manager"]
+    end
+
+    subgraph desktop["desktop で追加"]
+        font["fonts<br/>CaskaydiaMono Nerd Font"]
+        wayland["desktop<br/>Waybar / swaylock / swayidle / fuzzel<br/>grim / ImageMagick / pamixer<br/>brightnessctl / fcitx5 / wob"]
+        niri["niri<br/>Niri compositor"]
+        awww["awww<br/>awww / awww-daemon"]
+        wezterm["wezterm<br/>WezTerm"]
+        desktop_links["links-desktop<br/>Niri / swaylock / Waybar / WezTerm の設定"]
+
+        font --> desktop_links
+        wayland --> desktop_links
+        niri --> desktop_links
+        awww --> desktop_links
+        wezterm --> desktop_links
+    end
+
+    base --> editor
+    base --> dev
+    base --> go
+    base --> volta
+    base --> font
+    base --> wayland
+    base --> wezterm
+    rust --> niri
+    rust --> awww
+```
 
 ## 環境プロファイル
 
-- `minimal`: 基本パッケージ、zsh と最小限のリンク
-- `server`: CLI ツール、Neovim とその設定を追加（デフォルト）
-- `developer`: 開発用パッケージを追加
-- `desktop`: フォント、Wayland デスクトップとその設定を追加
+| プロファイル | 直前の段階から追加される主なツール |
+| --- | --- |
+| `minimal` | zsh、tmux、fzf、direnv、Rust、lsd、bat、Starship、zoxide、Sheldon、Yazi |
+| `server` | Neovimとその設定（デフォルト） |
+| `developer` | Python 3、pip、ripgrep、fd-find、Go、Volta |
+| `desktop` | CaskaydiaMono Nerd Font、Niri、WezTerm、Waybar、swaylock、swayidle、fuzzel、grim、ImageMagick、pamixer、brightnessctl、fcitx5、wob、awww |
 
 環境変数でも選べるため、ホスト固有の起動スクリプトなどから設定できる。
 

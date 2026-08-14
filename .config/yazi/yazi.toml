@@ -4,12 +4,12 @@ wrap="yes"
 # ya pkg add yazi-rs/plugins:piper
 [[plugin.prepend_previewers]]
 mime = "text/*"
-run = 'piper -- batcat --color=always --paging=never "$1"'
+run = 'piper -- bat --color=always --paging=never "$1"'
 
 [[plugin.prepend_previewers]]
 mime = "*/json"
-run = 'piper -- batcat --color=always --paging=never "$1"'
+run = 'piper -- bat --color=always --paging=never "$1"'
 
 [[plugin.prepend_previewers]]
 mime = "*/javascript"
-run = 'piper -- batcat --color=always --paging=never "$1"'
+run = 'piper -- bat --color=always --paging=never "$1"'

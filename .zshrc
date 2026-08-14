@@ -1,7 +1,4 @@
-export DOTFILES="$HOME/dotfiles"
-
-source "$DOTFILES/zsh/env.zsh"
-source "$DOTFILES/zsh/options.zsh"
+export DOTFILES="${${(%):-%N}:A:h}"
 
 # [FIRST] load zsh plugins
 eval "$(sheldon source)"

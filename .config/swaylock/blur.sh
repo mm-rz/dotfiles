@@ -1,4 +1,5 @@
-set -euo pipefail
+#!/bin/sh
+set -eu
 
 img="/tmp/swaylock-$(id -u).png"
 blur="/tmp/swaylock-$(id -u)-blur.png"
@@ -9,4 +10,3 @@ magick "$img" -blur 0x8 "$blur"
 swaylock -f -i "$blur"
 
 rm -f "$img" "$blur"
-
