@@ -187,7 +187,7 @@ cargo_install() {
 
 cargo_install_yazi() {
     if have yazi && have ya; then say "  already installed: yazi and ya"; return; fi
-    run cargo install --force yazi-build
+    run cargo install --force --git https://github.com/sxyazi/yazi.git yazi-build
 }
 
 link_file() {
